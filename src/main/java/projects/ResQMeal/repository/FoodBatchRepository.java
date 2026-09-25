@@ -10,4 +10,7 @@ public interface FoodBatchRepository extends JpaRepository<FoodBatch, Long> {
     // Spring looks at this exact method name and automatically writes a query
     // to find food where status = "AVAILABLE" and time is not expired.
     List<FoodBatch> findByStatusAndExpiryTimeAfter(String status, LocalDateTime currentTime);
+
+    // Finds food where status is "AVAILABLE" but the time has already passed
+    List<FoodBatch> findByStatusAndExpiryTimeBefore(String status, LocalDateTime currentTime);
 }
