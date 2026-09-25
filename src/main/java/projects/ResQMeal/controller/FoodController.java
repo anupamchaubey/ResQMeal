@@ -1,0 +1,39 @@
+package projects.ResQMeal.controller;
+
+import org.springframework.web.bind.annotation.*;
+import projects.ResQMeal.dto.FoodRequest;
+import projects.ResQMeal.entity.FoodBatch;
+import projects.ResQMeal.service.FoodService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/food")
+public class FoodController {
+
+    private final FoodService foodService;
+
+    public FoodController(FoodService foodService) {
+        this.foodService = foodService;
+    }
+
+    // Door 1: Restaurant posts food
+    @PostMapping
+    public FoodBatch postFood(@RequestBody FoodRequest request) {
+        // Notice we use the standard "get" methods now
+        return foodService.postFood(request.getDescription(), request.getExpiryTime());
+    }
+
+    // Door 2: Shelter checks the menu
+    @GetMapping("/available")
+    public List<FoodBatch> getAvailableFood() {
+        return foodService.getAvailableFood();
+    }
+
+    // Door 3: Shelter claims a specific batch
+    @PutMapping("/{id}/claim")
+    public FoodBatch claimFood(@PathVariable Long id) {
+        return foodService.claimFood(id);
+    }
+}
