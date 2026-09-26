@@ -62,4 +62,35 @@ public class FoodService {
 
         return batchRepository.save(batch);
     }
+
+    // --- Fetch History ---
+    public List<FoodBatch> getMyPostedFood(String email) {
+        AppUser donor = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return batchRepository.findByDonor(donor);
+    }
+
+    public List<FoodBatch> getMyClaimedFood(String email) {
+        AppUser claimer = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return batchRepository.findByClaimer(claimer);
+    }
+
+    // --- Secure Deletion ---
+    public void deletePost(Long batchId, String email) {
+        FoodBatch batch = batchRepository.findById(batchId)
+                .orElseThrow(() -> new RuntimeException("Food batch does not exist."));
+
+        // Security Check: Does the person trying to delete this actually own it?
+        if (!batch.getDonor().getEmail().equals(email)) {
+            throw new RuntimeException("Unauthorized: You can only delete your own posts.");
+        }
+
+        // Logic Check: You cannot delete food that a shelter is already driving to pick up
+        if (batch.getStatus().equals("CLAIMED")) {
+            throw new RuntimeException("Cannot delete: This food has already been claimed.");
+        }
+
+        batchRepository.delete(batch);
+    }
 }

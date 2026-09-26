@@ -42,4 +42,26 @@ public class FoodController {
 
         return foodService.claimFood(id, userEmail);
     }
+
+    // Door 4: Donor views their own active posts
+    @GetMapping("/my-posts")
+    public List<FoodBatch> getMyPosts() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return foodService.getMyPostedFood(userEmail);
+    }
+
+    // Door 5: Shelter views their past claims
+    @GetMapping("/my-claims")
+    public List<FoodBatch> getMyClaims() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return foodService.getMyClaimedFood(userEmail);
+    }
+
+    // Door 6: Donor cancels a post
+    @DeleteMapping("/{id}")
+    public String deletePost(@PathVariable Long id) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        foodService.deletePost(id, userEmail);
+        return "Post deleted successfully.";
+    }
 }

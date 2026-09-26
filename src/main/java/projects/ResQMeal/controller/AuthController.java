@@ -1,9 +1,12 @@
 package projects.ResQMeal.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import projects.ResQMeal.dto.AuthRequest;
 import projects.ResQMeal.entity.AppUser;
+import projects.ResQMeal.entity.BlacklistedToken;
+import projects.ResQMeal.repository.TokenBlacklistRepository;
 import projects.ResQMeal.repository.UserRepository;
 import projects.ResQMeal.security.JwtUtil;
 
@@ -16,11 +19,13 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, TokenBlacklistRepository tokenBlacklistRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.tokenBlacklistRepository=tokenBlacklistRepository;
     }
 
     // Door 1: Registration
@@ -57,5 +62,20 @@ public class AuthController {
 
         // 3. If they match, print and hand over the VIP pass
         return jwtUtil.generateToken(user.getEmail());
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+
+            // Add the dead token to the database
+            tokenBlacklistRepository.save(new BlacklistedToken(token));
+            return "Logged out securely. Token is invalidated.";
+        }
+
+        return "No valid token found.";
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import projects.ResQMeal.repository.TokenBlacklistRepository;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -15,9 +17,11 @@ import java.util.ArrayList;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
 
-    public JwtFilter(JwtUtil jwtUtil) {
+    public JwtFilter(JwtUtil jwtUtil, TokenBlacklistRepository tokenBlacklistRepository) {
         this.jwtUtil = jwtUtil;
+        this.tokenBlacklistRepository=tokenBlacklistRepository;
     }
 
     @Override
@@ -35,6 +39,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // 2. Grab the actual token text (skipping the word "Bearer ")
         String token = header.substring(7);
+
+        // NEW CHECK: Is this token on the blacklist?
+        if (tokenBlacklistRepository.existsByToken(token)) {
+            // If it is blacklisted, throw them out immediately.
+            chain.doFilter(request, response);
+            return;
+        }
 
         // 3. Hand it to our JwtUtil to scan it
         if (jwtUtil.validateToken(token)) {
