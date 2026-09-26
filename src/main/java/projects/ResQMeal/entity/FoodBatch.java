@@ -46,4 +46,20 @@ public class FoodBatch {
 
     public Integer getVersion() { return version; }
     public void setVersion(Integer version) { this.version = version; }
+
+    public AppUser getDonor() {
+        return donor;
+    }
+
+    public void setDonor(AppUser donor) {
+        this.donor = donor;
+    }
+
+    public AppUser getClaimer() {
+        return claimer;
+    }
+
+    public void setClaimer(AppUser claimer) {
+        this.claimer = claimer;
+    }
 }

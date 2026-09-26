@@ -1,6 +1,7 @@
 package projects.ResQMeal.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import projects.ResQMeal.entity.AppUser;
 import projects.ResQMeal.entity.FoodBatch;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,4 +14,8 @@ public interface FoodBatchRepository extends JpaRepository<FoodBatch, Long> {
 
     // Finds food where status is "AVAILABLE" but the time has already passed
     List<FoodBatch> findByStatusAndExpiryTimeBefore(String status, LocalDateTime currentTime);
+
+    List<FoodBatch> findByClaimer(AppUser claimer);
+
+    List<FoodBatch> findByDonor(AppUser donor);
 }

@@ -40,7 +40,7 @@ public class FoodService {
 
     // Rule 2: A shelter looks for fresh food
     public List<FoodBatch> getAvailableFood() {
-        return repository.findByStatusAndExpiryTimeAfter("AVAILABLE", LocalDateTime.now());
+        return batchRepository.findByStatusAndExpiryTimeAfter("AVAILABLE", LocalDateTime.now());
     }
 
     // Rule 3: A shelter claims the food (The double-booking defense)
