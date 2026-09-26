@@ -1,4 +1,4 @@
-# ResQMail 🚀
+# ResQMeal 🚀
 
 A high-performance, concurrent REST API designed to match food inventory from donors to NGOs in real-time, built with a focus on data integrity and strict auditing.
 
