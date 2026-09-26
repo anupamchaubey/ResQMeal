@@ -14,6 +14,16 @@ public class FoodBatch {
     private LocalDateTime expiryTime; // The exact time it goes bad
     private String status; // "AVAILABLE", "CLAIMED", or "EXPIRED"
 
+    // Many batches of food can belong to One donor
+    @ManyToOne
+    @JoinColumn(name = "donor_id", nullable = false)
+    private AppUser donor;
+
+    // Many batches of food can be claimed by One shelter
+    @ManyToOne
+    @JoinColumn(name = "claimer_id")
+    private AppUser claimer;
+
     @Version
     private Integer version; // Our secret weapon for the interview
 

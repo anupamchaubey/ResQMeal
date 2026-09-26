@@ -1,5 +1,6 @@
 package projects.ResQMeal.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import projects.ResQMeal.dto.FoodRequest;
 import projects.ResQMeal.entity.FoodBatch;
@@ -21,8 +22,10 @@ public class FoodController {
     // Door 1: Restaurant posts food
     @PostMapping
     public FoodBatch postFood(@RequestBody FoodRequest request) {
-        // Notice we use the standard "get" methods now
-        return foodService.postFood(request.getDescription(), request.getExpiryTime());
+        // Extract the email directly from the validated VIP pass
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return foodService.postFood(request.getDescription(), request.getExpiryTime(), userEmail);
     }
 
     // Door 2: Shelter checks the menu
@@ -34,6 +37,9 @@ public class FoodController {
     // Door 3: Shelter claims a specific batch
     @PutMapping("/{id}/claim")
     public FoodBatch claimFood(@PathVariable Long id) {
-        return foodService.claimFood(id);
+        // Extract the email directly from the validated VIP pass
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return foodService.claimFood(id, userEmail);
     }
 }
