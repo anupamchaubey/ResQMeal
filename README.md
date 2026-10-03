@@ -188,7 +188,7 @@ cd ResQMeal
 Log into MySQL and create the database:
 
 ```sql
-CREATE DATABASE resqmeal_db;
+CREATE DATABASE resqmail_db;
 ```
 
 ### Step 3: Configure Database Credentials
@@ -199,7 +199,7 @@ Open `src/main/resources/application.properties` and verify your credentials:
 spring.application.name=ResQMeal
 
 # Database Connection
-spring.datasource.url=jdbc:mysql://localhost:3306/resqmeal_db
+spring.datasource.url=jdbc:mysql://localhost:3306/resqmail_db
 spring.datasource.username=root
 spring.datasource.password=root
 
